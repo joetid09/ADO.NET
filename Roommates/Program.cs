@@ -21,6 +21,7 @@ namespace Roommates
                 switch (selection)
                 {
                     case ("Show all rooms"):
+                        //*Remember roomRepo is the address for the connection
                         List<Room> rooms = roomRepo.GetAll();
 
                             foreach(Room r in rooms)
@@ -30,9 +31,14 @@ namespace Roommates
                         Console.WriteLine("Press any key to continue");
                         Console.ReadLine();
                         break;
-                        // Do stuff
                     case ("Search for room"):
-                        // Do stuff
+                        //*Remember roomRepo is the address for the connection
+                        Console.WriteLine("What room number would you like to search for?");
+                        int roomResponse = int.Parse(Console.ReadLine());
+                        Room room = roomRepo.GetById(roomResponse);
+                        Console.WriteLine($"{room.Id}.){room.Name} - Max Occupancy({room.MaxOccupancy})");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
                         break;
                     case ("Add a room"):
                         // Do stuff
@@ -77,6 +83,8 @@ namespace Roommates
                     continue;
                 }
             }
+
+
         }
     }
 }
