@@ -41,6 +41,23 @@ namespace Roommates
                         Console.ReadLine();
                         break;
                     case ("Add a room"):
+                        Console.WriteLine("Enter Room Name:");
+                        string name = Console.ReadLine();
+
+                        Console.WriteLine("Enter Max Occupancy");
+                        int maxOccupancy = int.Parse(Console.ReadLine());
+
+                        Room roomToAdd = new Room()
+                        {
+                            Name = name,
+                            MaxOccupancy = maxOccupancy
+                        };
+
+                        roomRepo.Insert(roomToAdd);
+
+                        Console.WriteLine($"{roomToAdd.Name} has been assigned an id of {roomToAdd.Id}");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
                         // Do stuff
                         break;
                     case ("Exit"):
@@ -50,7 +67,8 @@ namespace Roommates
             }
         }
 
-        static string GetMenuSelection()
+
+        private static string GetMenuSelection()
         {
             Console.Clear();
 
