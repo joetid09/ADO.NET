@@ -18,7 +18,7 @@ namespace Roommates.Repositories
         ///Now that there is a tunnel/connection to the database, we need a place to put the data we want
         ///So we want to make a list of ALL the information there and return it
         ///
-        List<Chore> GetAll()
+       public List<Chore> GetAll()
         { 
             ///Reminder, because the database is shared. we want to close our connection as soon as we
             ///get what we want. 
@@ -83,7 +83,7 @@ namespace Roommates.Repositories
         public Chore GetChoreByid(int id)
         {
             //again, first step is to get connection address
-            using (SqlConnection conn = Connecion)
+            using (SqlConnection conn = Connection)
             {
                 //remember, using does not open the connection... only closes it
                 conn.Open();

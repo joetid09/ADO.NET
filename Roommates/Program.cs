@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Roommates.Repositories;
 using Roommates.Models;
 
+
 namespace Roommates
 {
     class Program
@@ -13,6 +14,7 @@ namespace Roommates
         static void Main(string[] args)
         {
             RoomRepository roomRepo = new RoomRepository(CONNECTION_STRING);
+            ChoreRepository choreRepo = new ChoreRepository(CONNECTION_STRING);
             bool runProgram = true;
             while (runProgram)
             {
@@ -60,9 +62,47 @@ namespace Roommates
                         Console.ReadLine();
                         // Do stuff
                         break;
+                     case ("Show all chores"):
+                        //*Remember roomRepo is the address for the connection
+                        List<Chore> chores = choreRepo.GetAll();
+
+                        foreach (Chore c in chores)
+                        {
+                            Console.WriteLine($"{c.Id} - {c.Name}");
+                        }
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+                        break;
+
+                    case ("Search for chores"):
+                        Console.WriteLine("What chore would you like to search for?");
+                        int choreResponse = int.Parse(Console.ReadLine());
+                        Chore chore= choreRepo.GetChoreByid(choreResponse);
+                        //
+                        Console.WriteLine($"Your search result is: {chore.Name}");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+                        break;
+
+                    case ("Create new chore"):
+                        Console.WriteLine("What chore would you like to add?");
+                            string choreName = Console.ReadLine();
+                        Chore newChore = new Chore()
+                        {
+                            Name = choreName
+                        };
+                        choreRepo.Insert(newChore);
+                        Console.WriteLine($"You have added {newChore.Name} as a new chore");
+                        Console.WriteLine("Press any ket to continue:");
+                        Console.ReadLine();
+                        break;
+
+
+                        break;
                     case ("Exit"):
                         runProgram = false;
                         break;
+
                 }
             }
         }
@@ -77,6 +117,9 @@ namespace Roommates
             "Show all rooms",
             "Search for room",
             "Add a room",
+            "Show all chores",
+            "Search for chores",
+            "Create new chore",
             "Exit"
         };
 
