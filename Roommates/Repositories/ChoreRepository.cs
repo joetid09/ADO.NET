@@ -120,5 +120,30 @@ namespace Roommates.Repositories
             }
         }
 
+        public void Insert(Chore chore)
+        {
+            //create connection with using statement
+            using (SqlConnection conn = Connection)
+            {
+                //remember to open as using will not.
+                conn.Open();
+                
+                //then create and sent instructions to SQL Database
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Chore (Name)
+                                       OUTPUT INSERTED.Id
+                                        VALUES (@name)";
+
+                    cmd.Parameters.AddWithValue("@name", chore.Name);
+                    int id = (int)cmd.ExecuteScalar();
+
+                    chore.Id = id;
+                }
+                       }
+
+           
+        }
+
     }
 }
