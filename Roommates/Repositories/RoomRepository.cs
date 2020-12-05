@@ -95,7 +95,7 @@ namespace Roommates.Repositories
 
                     Room room = null;
 
-                    // If we only expect a single row back from the database, we don't need a while loop.
+                    // If we only expect a single row back from th e database, we don't need a while loop.
                     if (reader.Read())
                     {
                         room = new Room

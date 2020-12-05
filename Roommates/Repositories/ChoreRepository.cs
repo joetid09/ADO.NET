@@ -78,6 +78,47 @@ namespace Roommates.Repositories
             }
         }
 
+        //Now let's make a method that will allow use to get a room by id (will need to take an id parameter)
+
+        public Chore GetChoreByid(int id)
+        {
+            //again, first step is to get connection address
+            using (SqlConnection conn = Connecion)
+            {
+                //remember, using does not open the connection... only closes it
+                conn.Open();
+                
+                //Now that connection is open, we need to let the end know what we want
+                //request take up usage so we want to make sure it closes once completed
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT Id, Name FROM Chore WHERE ID = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    //Now that the DB knows what to give use, we need to create a way to read it
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    Chore chore = null;
+
+                    //Since we only want one result, an if loop will replace the while loop
+                    if(reader.Read())
+                    {
+                        chore = new Chore
+                        {
+                            Id = id,
+                            //we still need to get ordinal and the value of that location
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                        };
+                    }
+                    //Now that request was received and the needed object built. we need to close the reader
+                    reader.Close();
+
+                    //and return the request chore
+                    return chore;
+                   
+                }
+            }
+        }
 
     }
 }
