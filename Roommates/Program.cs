@@ -85,7 +85,17 @@ namespace Roommates
                         Console.WriteLine("Press any key to continue");
                         Console.ReadLine();
                         break;
-
+                    case ("Show unassigned chores"):
+                        //*Remember roomRepo is the address for the connection
+                        List<Chore> assignedChores = choreRepo.GetAssignedChore();
+                        Console.WriteLine("The current unassigned chores are:");
+                        foreach (Chore c in assignedChores)
+                        {
+                            Console.WriteLine($"{c.Name}");
+                        }
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+                        break;
                     case ("Search for chores"):
                         Console.WriteLine("What chore would you like to search for?");
                         int choreResponse = int.Parse(Console.ReadLine());
@@ -131,6 +141,7 @@ namespace Roommates
             "Add a room",
             "Search for roommate",
             "Show all chores",
+            "Show unassigned chores",
             "Search for chores",
             "Create new chore",
             "Exit"

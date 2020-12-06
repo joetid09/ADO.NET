@@ -18,6 +18,43 @@ namespace Roommates.Repositories
         ///Now that there is a tunnel/connection to the database, we need a place to put the data we want
         ///So we want to make a list of ALL the information there and return it
         ///
+
+        public List<Chore> GetAssignedChore()
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+
+                    cmd.CommandText = @"SELECT ChoreId, RoommateId, Name from Chore
+                                        LEFT JOIN RoommateChore
+	                                    ON RoommateChore.Id = Chore.Id
+	                                    Where RoommateId IS NULL;
+		                                ";
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Chore> assignedChores = new List<Chore>();
+
+                    //remember, going to have more than one return, make sure to while loop
+                    while (reader.Read())
+                    {
+                        Chore chore = new Chore
+                        {
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        };
+
+                        //add the new chores to a list of chores 
+                        assignedChores.Add(chore);
+                    }
+                    reader.Close();
+                    return assignedChores;
+
+                }
+                            }
+        }
        public List<Chore> GetAll()
         { 
             ///Reminder, because the database is shared. we want to close our connection as soon as we
