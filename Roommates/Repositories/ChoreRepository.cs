@@ -13,7 +13,7 @@ namespace Roommates.Repositories
         ///***REMEMBER to FIRST setup network(connection) first step is to CONSTRUCT that TUNNEL!****
         ///connection string is method in base that takes the connection(address info) and makes new SLConnection
 
-        public ChoreRepository(string connectionString) : base(connectionString) {}
+        public ChoreRepository(string connectionString) : base(connectionString) { }
 
         ///Now that there is a tunnel/connection to the database, we need a place to put the data we want
         ///So we want to make a list of ALL the information there and return it
@@ -21,17 +21,17 @@ namespace Roommates.Repositories
 
         public List<Chore> GetAssignedChore()
         {
-            using(SqlConnection conn = Connection)
+            using (SqlConnection conn = Connection)
             {
                 conn.Open();
 
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
 
-                    cmd.CommandText = @"SELECT ChoreId, RoommateId, Name from Chore
-                                        LEFT JOIN RoommateChore
-	                                    ON RoommateChore.Id = Chore.Id
-	                                    Where RoommateId IS NULL;
+                    cmd.CommandText = @"SELECT Chore.Id as Id, Name, RoommateId from Chore
+	                                    LEFT JOIN RoommateChore
+	                                    ON Chore.Id = RoommateChore.ChoreId
+                                        WHERE RoommateId is NULL
 		                                ";
 
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -43,6 +43,7 @@ namespace Roommates.Repositories
                     {
                         Chore chore = new Chore
                         {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Name = reader.GetString(reader.GetOrdinal("Name"))
                         };
 
@@ -53,15 +54,16 @@ namespace Roommates.Repositories
                     return assignedChores;
 
                 }
-                            }
+            }
         }
-       public List<Chore> GetAll()
-        { 
+
+        public List<Chore> GetAll()
+        {
             ///Reminder, because the database is shared. we want to close our connection as soon as we
             ///get what we want. 
             ///the "using" block will close our connection to the resource as soon as it is completed
             ///
-            using(SqlConnection conn = Connection)
+            using (SqlConnection conn = Connection)
             {
                 //although using closes the connection once it is finished, it DOES NOT open it for us
                 //Therefore, we must open it manually
@@ -77,11 +79,11 @@ namespace Roommates.Repositories
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     //we now need a list format to read the data received, and store as chores
-                    List < Chore > chores = new List<Chore>();
+                    List<Chore> chores = new List<Chore>();
 
                     //so long as there is data to return (remember, it goes row by row in forward motion
                     //(it can never go back to a row it's alreay visited). chores will return true
-                    while(reader.Read())
+                    while (reader.Read())
                     {
                         ///we want to get the index location of each column
                         int idColumnPosition = reader.GetOrdinal("ID");
@@ -114,6 +116,30 @@ namespace Roommates.Repositories
                 }
             }
         }
+
+        public void AssignChore(int roommateId, int choreId )
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO RoommateChore (RoommateID), (Choreid)
+                                        OUTPUT INSERT.Id
+                                        VALUES (@roommateId, @choreId)";
+
+                    cmd.Parameters.AddWithValue("@roommateId", roommateId);
+                    cmd.Parameters.AddWithValue("@choreId", choreId);
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    
+                    roommateId = id;
+                }
+            }
+        }
+
 
         //Now let's make a method that will allow use to get a room by id (will need to take an id parameter)
 

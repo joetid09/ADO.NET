@@ -96,6 +96,36 @@ namespace Roommates
                         Console.WriteLine("Press any key to continue");
                         Console.ReadLine();
                         break;
+                    case ("Assign a chore"):
+                        List<Chore> theChores = choreRepo.GetAssignedChore();
+                        Console.WriteLine("The current unassigned chores are:");
+                        foreach (Chore c in theChores)
+                        {
+                            Console.WriteLine($"{c.Id}.) {c.Name}");
+                        }
+                        Console.WriteLine("Please choose the number of the chore you'd like to assign");
+                        int choreId = int.Parse(Console.ReadLine());
+                        Console.WriteLine($"You have chose {choreId}");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+
+                        //Show list of all roommates
+                        List<Roommate> roommates = roommateRepo.GetAll();
+                        Console.WriteLine("Please choose a roommate to assign your chosen chore to");
+                        foreach (Roommate r in roommates)
+                        {
+                            Console.WriteLine($"{r.Id}.) {r.Firstname}");
+                        }
+                        //assign the given roommate number to roommateId for assigning feature 
+                        int roommateId = int.Parse(Console.ReadLine());
+                        Console.WriteLine($"you have chose{roommateId}");
+                        Console.ReadLine();
+
+                        choreRepo.AssignChore(roommateId, choreId);
+                        Console.WriteLine("Chore assignment successful");
+                        Console.WriteLine("Press any key to continue");
+                        Console.ReadLine();
+                        break;
                     case ("Search for chores"):
                         Console.WriteLine("What chore would you like to search for?");
                         int choreResponse = int.Parse(Console.ReadLine());
@@ -129,7 +159,6 @@ namespace Roommates
             }
         }
 
-
         private static string GetMenuSelection()
         {
             Console.Clear();
@@ -142,6 +171,7 @@ namespace Roommates
             "Search for roommate",
             "Show all chores",
             "Show unassigned chores",
+            "Assign a chore",
             "Search for chores",
             "Create new chore",
             "Exit"
